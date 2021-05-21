@@ -81,20 +81,20 @@ import java.util.ArrayList;
      * @param filePath      The path to the file containing the list of recent files
      * @return recentFiles  A list of the files that the user recently used
      */
-    public static ArrayList<String> getRecentFiles(String filePath) {
-        ArrayList<String> recentFiles = new ArrayList<String>();
+    public static ArrayList<String> fileToArrayList(String filePath) {
+        ArrayList<String> list = new ArrayList<String>();
         try {
             File file = new File(filePath);
             Scanner reader = new Scanner(file);
             while (reader.hasNextLine()) {
                 String line = reader.nextLine();
-                recentFiles.add(line);
+                list.add(line);
             }
             reader.close();
         }
         catch (FileNotFoundException e) {
-            // File was not found which means this is the user's first run (do nothing)
+            // File was not found so return an empty array list
         }
-        return recentFiles;
+        return list;
     }
  }
