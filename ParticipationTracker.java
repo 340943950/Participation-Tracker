@@ -49,4 +49,9 @@ import javax.swing.filechooser.*;
         }
         return filePath;
     }
+
+    public static String dropDownDialogBox(String[] options, String question, String title) {
+        String choice = JOptionPane.showInputDialog(null, question, title, JOptionPane.PLAIN_MESSAGE, null, options, "").toString();
+        return choice;
+    }
  }
