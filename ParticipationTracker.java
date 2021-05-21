@@ -11,7 +11,9 @@ import javax.swing.filechooser.*;
 
  public class ParticipationTracker {
     public static void main(String[] args) throws IOException {
-        
+        String[] options = {"1", "2", "3"};
+        String text = dropDownDialogBox(options, "Choose:", "Title");
+        System.out.println(text);
     }
 
     /**
@@ -50,8 +52,22 @@ import javax.swing.filechooser.*;
         return filePath;
     }
 
+    /**
+     * This method creates a generic drop down dialog box and returns the user's choice
+     * 
+     * @param options   THe set of options from which the user can choose
+     * @param question
+     * @param title
+     * @return choice
+     */
     public static String dropDownDialogBox(String[] options, String question, String title) {
-        String choice = JOptionPane.showInputDialog(null, question, title, JOptionPane.PLAIN_MESSAGE, null, options, "").toString();
+        String choice;
+        try {
+            choice = JOptionPane.showInputDialog(null, question, title, JOptionPane.PLAIN_MESSAGE, null, options, "").toString();
+        }
+        catch (Exception e) {
+            choice = "";
+        }
         return choice;
     }
  }
