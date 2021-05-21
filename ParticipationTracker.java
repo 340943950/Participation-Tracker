@@ -6,11 +6,15 @@
  * */
 
 import java.io.IOException;
+import java.io.File;
+import java.io.FileNotFoundException;
 import javax.swing.*;
 import javax.swing.filechooser.*;
+import java.util.Scanner;
+import java.util.ArrayList;
 
  public class ParticipationTracker {
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, FileNotFoundException {
         
     }
 
@@ -68,5 +72,29 @@ import javax.swing.filechooser.*;
             choice = "";
         }
         return choice;
+    }
+
+    /**
+     * This method takes in the path to the file containing the recent files data and puts the data into 
+     * an array list
+     * 
+     * @param filePath      The path to the file containing the list of recent files
+     * @return recentFiles  A list of the files that the user recently used
+     */
+    public static ArrayList<String> getRecentFiles(String filePath) {
+        ArrayList<String> recentFiles = new ArrayList<String>();
+        try {
+            File file = new File(filePath);
+            Scanner reader = new Scanner(file);
+            while (reader.hasNextLine()) {
+                String line = reader.nextLine();
+                recentFiles.add(line);
+            }
+            reader.close();
+        }
+        catch (FileNotFoundException e) {
+            // File was not found which means this is the user's first run (do nothing)
+        }
+        return recentFiles;
     }
  }
