@@ -98,6 +98,12 @@ import java.util.ArrayList;
         return list;
     }
 
+    /**
+     * Converts a string array list into a string array
+     * 
+     * @param arrList   The array list to be converted
+     * @return arr      The array that the array ist is converted into
+     */
     public static String[] arrListToArr(ArrayList<String> arrList) {
         String[] arr = new String[arrList.size()];
         arr = arrList.toArray(arr);
