@@ -109,4 +109,22 @@ import java.util.ArrayList;
         arr = arrList.toArray(arr);
         return arr;
     }
+
+    /**
+     * This method adds an element to an array list and deletes the first element if there are too many elements
+     * 
+     * @param arrList       The array list to be updated
+     * @param newElement    The new element to be added to the array list
+     * @param maxToKeep     The maximum number of elements to keep (set to -1 to keep infinite elements)
+     */
+    public static void updateRecentFiles(ArrayList<String> arrList, String newElement, int maxToKeep) {
+        // Adds the new element at the end of the array lsit
+        arrList.add(newElement);
+
+        while (arrList.size() > maxToKeep && maxToKeep != -1) {
+            // If there are more elements than should be kept then delete the first element (like queue data structure)
+            arrList.remove(0);
+        }
+        
+    }
  }
