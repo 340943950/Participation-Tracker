@@ -12,6 +12,7 @@ import javax.swing.*;
 import javax.swing.filechooser.*;
 import java.util.Scanner;
 import java.util.ArrayList;
+import java.io.FileWriter;
 
  public class ParticipationTracker {
     public static void main(String[] args) throws IOException, FileNotFoundException {
@@ -124,7 +125,27 @@ import java.util.ArrayList;
         while (arrList.size() > maxToKeep && maxToKeep != -1) {
             // If there are more elements than should be kept then delete the first element (like queue data structure)
             arrList.remove(0);
-        }
+        } 
+    }
+
+    /**
+     * This method writes an array list to a file
+     * 
+     * @param arrList       The array list to write into the file
+     * @param fileName      The file to write the array list to
+     * @throws IOException  Signals that the input or output has failed
+     */
+    public static void arrListToFile(ArrayList<String> arrList, String fileName) throws IOException {
+        File file = new File(fileName);
+        file.createNewFile();
         
+        FileWriter writer = new FileWriter(fileName);
+        for (int i = 0; i < arrList.size(); i++) {
+            writer.write(arrList.get(i));
+            if (i != arrList.size() - 1) {
+                writer.write("\n");
+            }
+        }
+        writer.close();
     }
  }
