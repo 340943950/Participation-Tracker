@@ -81,7 +81,7 @@ import java.util.ArrayList;
      * @param filePath      The path to the file containing the list of recent files
      * @return recentFiles  A list of the files that the user recently used
      */
-    public static String[] fileToArray(String filePath) {
+    public static ArrayList<String> fileToArrayList(String filePath) {
         ArrayList<String> list = new ArrayList<String>();
         try {
             File file = new File(filePath);
@@ -95,9 +95,12 @@ import java.util.ArrayList;
         catch (FileNotFoundException e) {
             // File was not found so return an empty array list
         }
+        return list;
+    }
 
-        String[] arr = new String[list.size()];
-        arr = list.toArray(arr);
+    public static String[] arrListToArr(ArrayList<String> arrList) {
+        String[] arr = new String[arrList.size()];
+        arr = arrList.toArray(arr);
         return arr;
     }
  }
