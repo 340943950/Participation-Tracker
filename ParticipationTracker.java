@@ -30,8 +30,8 @@ import java.io.FileWriter;
      * @param fileType          Restrict the filetypes (csv, txt, etc.) shown in the file explorer pop-up
      * @return fileName         The path of the file that the user selected
      */
-    public static String getFilePath(String fileDescription, String fileType) {
-        if (!fileDescription.equals("")) {
+    public static String getFilePath(String fileDescription, String fileType) {        
+        if (fileDescription.equals("")) {
             fileDescription = fileType;
         }
         
@@ -147,5 +147,44 @@ import java.io.FileWriter;
             }
         }
         writer.close();
+    }
+
+    public static void assignChatPoints(String[] names, int[] points, String filePath) throws FileNotFoundException {
+        File file = new File(filePath);
+        Scanner reader = new Scanner(file);
+
+        int lineNumber = 0;
+        char charToFind = ':';
+        String lastName = "";   // The last name that was read in
+
+        // Read each line in file
+        while (reader.hasNextLine()) {
+            lineNumber += 1;
+            String line = reader.nextLine();
+            // Only check for a name if the lineNumber % 3 == 2 (i.e. 2, 5, 8, 11, 14, etc.)
+            // These are the lines with the names
+            if (lineNumber % 3 == 2) {
+                // Find the position of the colon in the line
+                int colonIndex = -1;    // Default value of -1
+                for (int i = 0; i < line.length(); i++) {
+                    if (line.charAt(i) == charToFind) {
+                        colonIndex = i;
+                        break;
+                    }
+                }
+
+                // Find name by looking at string before the colon
+                String name = line.substring(0, colonIndex);
+                for (int i = 0; i < names.length; i++) {
+                    // If same person puts something in the chat multiple times in a row, only one point is given
+                    if (names[i].equals(name) && !name.equals(lastName)) {
+                        points[i] += 1;
+                    }
+                }
+                // Update the lastName to be the current name
+                lastName = name;
+            }
+        }
+        reader.close();
     }
  }
