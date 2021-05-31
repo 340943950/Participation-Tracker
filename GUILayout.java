@@ -1,5 +1,7 @@
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.Dimension;
+import javax.swing.*;
 
 /**
  *
@@ -18,7 +20,27 @@ public class GUILayout extends javax.swing.JFrame {
         
         // New Student Menu Item
         NewStudentMenuItem.addActionListener((ActionEvent ev) -> {
+            
+            // Log for debugging purposes
             System.out.println("Adding a new student");
+            
+            // Add elements 
+            Box studentOptionBox = new Box(0);      // Box to hold everything
+            studentOptionBox.setSize(10, 10);
+            JLabel text = new JLabel();             // Name
+            text.setText("Student Name");
+            JButton plusButton = new JButton();     // Plus button
+            plusButton.setText("+");
+            JButton minusButton = new JButton();
+            minusButton.setText("-");
+            
+            // Add to components and update
+            studentOptionBox.add(text);
+            studentOptionBox.add(plusButton);
+            studentOptionBox.add(minusButton);
+            StudentListPanel.add(studentOptionBox);
+            studentOptionBox.revalidate();
+            StudentListPanel.revalidate();
         });
         
         // Add more action listeners here
@@ -50,17 +72,7 @@ public class GUILayout extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        javax.swing.GroupLayout StudentListPanelLayout = new javax.swing.GroupLayout(StudentListPanel);
-        StudentListPanel.setLayout(StudentListPanelLayout);
-        StudentListPanelLayout.setHorizontalGroup(
-            StudentListPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 362, Short.MAX_VALUE)
-        );
-        StudentListPanelLayout.setVerticalGroup(
-            StudentListPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 299, Short.MAX_VALUE)
-        );
-
+        StudentListPanel.setLayout(new javax.swing.BoxLayout(StudentListPanel, javax.swing.BoxLayout.Y_AXIS));
         ScrollPane.setViewportView(StudentListPanel);
 
         FileMenu.setText("File");
@@ -81,7 +93,7 @@ public class GUILayout extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(ScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 376, Short.MAX_VALUE)
+                .addComponent(ScrollPane)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
