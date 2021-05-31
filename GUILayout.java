@@ -26,21 +26,77 @@ public class GUILayout extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        ScrollPane = new javax.swing.JScrollPane();
+        StudentListPanel = new javax.swing.JPanel();
+        MenuBar = new javax.swing.JMenuBar();
+        FileMenu = new javax.swing.JMenu();
+        EditMenu = new javax.swing.JMenu();
+        NewStudentMenuItem = new javax.swing.JMenuItem();
+
+        FormListener formListener = new FormListener();
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
+        javax.swing.GroupLayout StudentListPanelLayout = new javax.swing.GroupLayout(StudentListPanel);
+        StudentListPanel.setLayout(StudentListPanelLayout);
+        StudentListPanelLayout.setHorizontalGroup(
+            StudentListPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 362, Short.MAX_VALUE)
+        );
+        StudentListPanelLayout.setVerticalGroup(
+            StudentListPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 299, Short.MAX_VALUE)
+        );
+
+        ScrollPane.setViewportView(StudentListPanel);
+
+        FileMenu.setText("File");
+        MenuBar.add(FileMenu);
+
+        EditMenu.setText("Edit");
+
+        NewStudentMenuItem.setText("Add New Student");
+        NewStudentMenuItem.addActionListener(formListener);
+        EditMenu.add(NewStudentMenuItem);
+
+        MenuBar.add(EditMenu);
+
+        setJMenuBar(MenuBar);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(ScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 376, Short.MAX_VALUE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(ScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 257, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         pack();
+    }
+
+    // Code for dispatching events from components to event handlers.
+
+    private class FormListener implements java.awt.event.ActionListener {
+        FormListener() {}
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            if (evt.getSource() == NewStudentMenuItem) {
+                GUILayout.this.NewStudentMenuItemActionPerformed(evt);
+            }
+        }
     }// </editor-fold>//GEN-END:initComponents
+
+    private void NewStudentMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_NewStudentMenuItemActionPerformed
+        System.out.println("Button successfully pressed");
+    }//GEN-LAST:event_NewStudentMenuItemActionPerformed
 
     /**
      * @param args the command line arguments
@@ -78,5 +134,11 @@ public class GUILayout extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    public javax.swing.JMenu EditMenu;
+    public javax.swing.JMenu FileMenu;
+    public javax.swing.JMenuBar MenuBar;
+    public javax.swing.JMenuItem NewStudentMenuItem;
+    public javax.swing.JScrollPane ScrollPane;
+    public javax.swing.JPanel StudentListPanel;
     // End of variables declaration//GEN-END:variables
 }
