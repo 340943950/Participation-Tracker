@@ -5,6 +5,8 @@
  * Description: Tracking participation in a classroom setting
  * */
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -53,6 +55,27 @@ import java.io.FileWriter;
              }
          });
      }
+     
+         /**
+     * Method that stores all action listener overrides. 
+     * Notice that all overrides call upon the objects at the bottom of this
+     * file.
+     * 
+     * @author  Vaughn Chan
+     */
+     @Override
+    public void initActions() {
+        
+        // New Student Menu Item
+        NewStudentMenuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent ev) {
+                System.out.println("Adding a new student");
+            }
+        });
+        
+        // Add more action listeners here
+    }
 
     /**
      * This method can open a file explorer pop-up that finds the path of a selected file (returns an 
