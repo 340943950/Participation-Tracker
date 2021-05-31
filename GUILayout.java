@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.Dimension;
@@ -9,6 +10,8 @@ import javax.swing.*;
  */
 public class GUILayout extends javax.swing.JFrame {
     
+    public ArrayList<StudentBar> studentBars;
+    
     /**
      * Method that stores all action listener overrides. 
      * Notice that all overrides call upon the objects at the bottom of this
@@ -18,32 +21,21 @@ public class GUILayout extends javax.swing.JFrame {
      */
     public void initActions() {
         
-        // New Student Menu Item
+        // Intialize studentBars list
+        studentBars = new ArrayList<StudentBar>();
+        
+        // Loop through each element
+        studentBars.forEach((n)  -> {
+            System.out.println(n);
+        } );
+        
+        // Add a student menu
         NewStudentMenuItem.addActionListener((ActionEvent ev) -> {
-            
-            // Log for debugging purposes
-            System.out.println("Adding a new student");
-            
-            // Add elements 
-            Box studentOptionBox = new Box(0);      // Box to hold everything
-            studentOptionBox.setSize(10, 10);
-            JLabel text = new JLabel();             // Name
-            text.setText("Student Name");
-            JButton plusButton = new JButton();     // Plus button
-            plusButton.setText("+");
-            JButton minusButton = new JButton();
-            minusButton.setText("-");
-            
-            // Add to components and update
-            studentOptionBox.add(text);
-            studentOptionBox.add(plusButton);
-            studentOptionBox.add(minusButton);
-            StudentListPanel.add(studentOptionBox);
-            studentOptionBox.revalidate();
-            StudentListPanel.revalidate();
+            System.out.println("Make new student");
+            studentBars.add(new StudentBar("New S", StudentListPanel));
         });
         
-        // Add more action listeners here
+        // Add more action listeners here...
     }
     
     /**
