@@ -5,18 +5,20 @@
  * Description: Tracking participation in a classroom setting
  * */
 
-import java.io.IOException;
 import java.io.File;
 import java.io.FileNotFoundException;
-import javax.swing.*;
-import javax.swing.filechooser.*;
-import java.util.Scanner;
-import java.util.ArrayList;
 import java.io.FileWriter;
+import java.io.IOException;
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
+import javax.swing.filechooser.FileFilter;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import java.util.ArrayList;
+import java.util.Scanner;
 
  public class ParticipationTracker {
     public static void main(String[] args) throws IOException, FileNotFoundException {
-        
+
     }
 
     /**
@@ -30,8 +32,8 @@ import java.io.FileWriter;
      * @param fileType          Restrict the filetypes (csv, txt, etc.) shown in the file explorer pop-up
      * @return fileName         The path of the file that the user selected
      */
-    public static String getFilePath(String fileDescription, String fileType) {
-        if (!fileDescription.equals("")) {
+    public static String getFilePath(String fileDescription, String fileType) {        
+        if (fileDescription.equals("")) {
             fileDescription = fileType;
         }
         
@@ -75,13 +77,6 @@ import java.io.FileWriter;
         return choice;
     }
 
-    /**
-     * This method takes in the path to the file containing the recent files data and puts the data into 
-     * an array list
-     * 
-     * @param filePath      The path to the file containing the list of recent files
-     * @return recentFiles  A list of the files that the user recently used
-     */
     public static ArrayList<String> fileToArrayList(String filePath) {
         ArrayList<String> list = new ArrayList<String>();
         try {
@@ -144,6 +139,95 @@ import java.io.FileWriter;
             writer.write(arrList.get(i));
             if (i != arrList.size() - 1) {
                 writer.write("\n");
+            }
+        }
+        writer.close();
+    }
+
+    public static void assignChatPoints(String[] names, int[] points, String filePath) throws FileNotFoundException {
+        File file = new File(filePath);
+        Scanner reader = new Scanner(file);
+
+        int lineNumber = 0;
+        char charToFind = ':';
+        String lastName = "";   // The last name that was read in
+
+        // Read each line in file
+        while (reader.hasNextLine()) {
+            lineNumber += 1;
+            String line = reader.nextLine();
+            // Only check for a name if the lineNumber % 3 == 2 (i.e. 2, 5, 8, 11, 14, etc.)
+            // These are the lines with the names
+            if (lineNumber % 3 == 2) {
+                // Find the position of the colon in the line
+                int colonIndex = -1;    // Default value of -1
+                for (int i = 0; i < line.length(); i++) {
+                    if (line.charAt(i) == charToFind) {
+                        colonIndex = i;
+                        break;
+                    }
+                }
+
+                // Find name by looking at string before the colon
+                String name = line.substring(0, colonIndex);
+                for (int i = 0; i < names.length; i++) {
+                    // If same person puts something in the chat multiple times in a row, only one point is given
+                    if (names[i].equals(name) && !name.equals(lastName)) {
+                        points[i] += 1;
+                    }
+                }
+                // Update the lastName to be the current name
+                lastName = name;
+            }
+        }
+        reader.close();
+    }
+
+    public static void writePointsToFile(String filePath, String[] names, int[] points) throws IOException {        
+        File file = new File(filePath);
+        String[] headers;
+        // File doesn't exist but was created
+        if (file.createNewFile()) {
+            headers = names;
+            FileWriter writer = new FileWriter(file);
+            writer.append("Date");
+
+            for (int i = 0; i < headers.length; i++) {
+                writer.append("," + headers[i]);
+            }
+            writer.close();
+        }
+        // File already exists
+        else {
+            Scanner reader = new Scanner(file);
+            String[] tempHeaders = reader.nextLine().split(",");
+            headers = Arrays.copyOfRange(tempHeaders, 1, tempHeaders.length);
+            reader.close();
+        }
+        
+        // Last argument controls whether or not the data is appended to the end (if false, then overwrites)
+        FileWriter writer = new FileWriter(file, true);
+        
+        Calendar cal = Calendar.getInstance();
+        SimpleDateFormat simpleformat = new SimpleDateFormat("MM/dd/yyyy");
+        String currDate = simpleformat.format(cal.getTime());
+
+        writer.append("\n" + currDate);
+        int nameIndex;
+        for (int i = 0; i < headers.length; i++) {
+            nameIndex = -1; // Default value
+            for (int j = 0; j < names.length; j++) {
+                if (headers[i].equals(names[j])) {
+                    nameIndex = j;
+                    break;
+                }
+            }
+
+            if (nameIndex != -1) {
+                writer.append("," + Integer.toString(points[nameIndex]));
+            }
+            else {
+                writer.append(",0");    // If name can't be found, assume they got 0 points
             }
         }
         writer.close();
