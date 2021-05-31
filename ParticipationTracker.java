@@ -148,6 +148,14 @@ import javax.swing.filechooser.FileNameExtensionFilter;
         writer.close();
     }
 
+    /**
+     * This method assigns chat points based on how many times a student participated in the chat
+     * 
+     * @param names     The names of the students (index corresponds to that of points)
+     * @param points    The points each student has on the current date (index corresponds to that of points)
+     * @param filePath  The path to the file with the chat data
+     * @throws FileNotFoundException
+     */
     public static void assignChatPoints(String[] names, int[] points, String filePath) throws FileNotFoundException {
         File file = new File(filePath);
         Scanner reader = new Scanner(file);
@@ -187,6 +195,14 @@ import javax.swing.filechooser.FileNameExtensionFilter;
         reader.close();
     }
 
+    /**
+     * This method writes the points to an existing csv file or creates a csv file if it doesn't already exist
+     * 
+     * @param names     The names of the students (index corresponds to that of points)
+     * @param points    The points each student has on the current date (index corresponds to that of points)
+     * @param filePath  The path to the file with the old points data
+     * @throws IOException
+     */
     public static void writePointsToFile(String filePath, String[] names, int[] points) throws IOException {        
         File file = new File(filePath);
         String[] headers;
