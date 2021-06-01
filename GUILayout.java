@@ -10,40 +10,11 @@ import javax.swing.*;
  */
 public class GUILayout extends javax.swing.JFrame {
     
-    public ArrayList<StudentBar> studentBars;
-    
-    /**
-     * Method that stores all action listener overrides. 
-     * Notice that all overrides call upon the objects at the bottom of this
-     * file.
-     * 
-     * @author  Vaughn Chan
-     */
-    public void initActions() {
-        
-        // Intialize studentBars list
-        studentBars = new ArrayList<StudentBar>();
-        
-        // Loop through each element
-        studentBars.forEach((n)  -> {
-            System.out.println(n);
-        } );
-        
-        // Add a student menu
-        NewStudentMenuItem.addActionListener((ActionEvent ev) -> {
-            System.out.println("Make new student");
-            studentBars.add(new StudentBar("New S", StudentListPanel));
-        });
-        
-        // Add more action listeners here...
-    }
-    
     /**
      * Creates new form GUILayout
      */
     public GUILayout() {
         initComponents();
-        initActions();
     }
 
     /**

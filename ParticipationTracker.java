@@ -27,7 +27,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class ParticipationTracker{
+public class ParticipationTracker extends GUILayout{
      
     /**
      * The main method for where code should run
@@ -58,14 +58,29 @@ public class ParticipationTracker{
 	    java.util.logging.Logger.getLogger(GUILayout.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
 	}
 	//</editor-fold>
-         
-	/* Create and display the form */
+
+	// Initialize the GUI
+	GUILayout gui = new GUILayout();
 	java.awt.EventQueue.invokeLater(new Runnable() {
 		public void run() {
-		    new GUILayout().setVisible(true);
+		    gui.setVisible(true);
 		}
 	    });
-
+	
+        // Intialize Student Bars
+        ArrayList<StudentBar> studentBars = new ArrayList<StudentBar>();
+	
+        // Loop through each studentBar --- EDIT THIS TO CHANGE WHAT BUTTONS DO
+        studentBars.forEach((n)  -> {
+		System.out.println(n);
+	    });
+        
+        // Event handler for a menu button
+        gui.NewStudentMenuItem.addActionListener((ActionEvent ev) -> {
+		System.out.println("Make new student");
+		studentBars.add(new StudentBar("New S", gui.StudentListPanel));
+	    });
+	
 	// IZABEL CODE --
 	String classListFile = ("./ClassListTemplate.csv"); // When integrating replace this with the file input from Adarshes code
 	String pointsFile = ("./Points-Example.csv"); // When integrating replace with points file
