@@ -83,15 +83,20 @@ public class ParticipationTracker extends GUILayout{
         
         // Event handler for Populate
         gui.PopulateStudentBarMenu.addActionListener((ActionEvent ev) -> {
-            
+            String classListFile = getFilePath("CSV File", "csv");
+            String[] classList = getClassList(classListFile);
+            for (String studentName : classList) {
+                studentBars.add(new StudentBar(studentName, gui.StudentListPanel));
+            }
         });
 	
-	// IZABEL CODE --
+    /* IZABEL CODE --
 	String classListFile = ("./ClassListTemplate.csv"); // When integrating replace this with the file input from Adarshes code
 	String pointsFile = ("./Points-Example.csv"); // When integrating replace with points file
 
 	String[] classList = getClassList(classListFile); // Array with first and last name of every student
-	String[] classInitials = getInitials(classListFile); // Array with initials of every student for display purposes
+    String[] classInitials = getInitials(classListFile); // Array with initials of every student for display purposes
+    */
 
 	// double[] studentAverages = getAverage(pointsFile); // Array with average point value for each student
 	// double[] studentPercentiles = getPercentile(studentAverages); // Array with percentile for each student
