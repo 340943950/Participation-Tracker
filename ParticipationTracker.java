@@ -75,11 +75,16 @@ public class ParticipationTracker extends GUILayout{
 		System.out.println(n);
 	    });
         
-        // Event handler for a menu button
+        // Event handler for Student Menu Item
         gui.NewStudentMenuItem.addActionListener((ActionEvent ev) -> {
 		System.out.println("Make new student");
 		studentBars.add(new StudentBar("New S", gui.StudentListPanel));
 	    });
+        
+        // Event handler for Populate
+        gui.PopulateStudentBarMenu.addActionListener((ActionEvent ev) -> {
+            
+        });
 	
 	// IZABEL CODE --
 	String classListFile = ("./ClassListTemplate.csv"); // When integrating replace this with the file input from Adarshes code

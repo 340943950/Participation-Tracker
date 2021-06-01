@@ -32,6 +32,7 @@ public class GUILayout extends javax.swing.JFrame {
         FileMenu = new javax.swing.JMenu();
         EditMenu = new javax.swing.JMenu();
         NewStudentMenuItem = new javax.swing.JMenuItem();
+        PopulateStudentBarMenu = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -45,6 +46,9 @@ public class GUILayout extends javax.swing.JFrame {
 
         NewStudentMenuItem.setText("Add New Student");
         EditMenu.add(NewStudentMenuItem);
+
+        PopulateStudentBarMenu.setText("Populate Student Bar");
+        EditMenu.add(PopulateStudentBarMenu);
 
         MenuBar.add(EditMenu);
 
@@ -63,7 +67,7 @@ public class GUILayout extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(ScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 257, Short.MAX_VALUE)
+                .addComponent(ScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 307, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -76,6 +80,7 @@ public class GUILayout extends javax.swing.JFrame {
     public javax.swing.JMenu FileMenu;
     public javax.swing.JMenuBar MenuBar;
     public javax.swing.JMenuItem NewStudentMenuItem;
+    public javax.swing.JMenuItem PopulateStudentBarMenu;
     public javax.swing.JScrollPane ScrollPane;
     public javax.swing.JPanel StudentListPanel;
     // End of variables declaration//GEN-END:variables

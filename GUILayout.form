@@ -19,6 +19,11 @@
                 <Property name="text" type="java.lang.String" value="Add New Student"/>
               </Properties>
             </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="PopulateStudentBarMenu">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Populate Student Bar"/>
+              </Properties>
+            </MenuItem>
           </SubComponents>
         </Menu>
       </SubComponents>
@@ -58,7 +63,7 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="ScrollPane" pref="257" max="32767" attributes="0"/>
+              <Component id="ScrollPane" pref="307" max="32767" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
       </Group>
