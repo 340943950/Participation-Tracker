@@ -353,7 +353,8 @@ public class ParticipationTracker extends GUILayout{
             fileDescription = fileType;
         }
         
-        JFileChooser fc = new JFileChooser();
+        // Creates a file chooser that opens the directory that this java file is in
+        JFileChooser fc = new JFileChooser(new File(System.getProperty("user.dir")));
         if (!fileType.equals("")) {
             FileFilter filter = new FileNameExtensionFilter(fileDescription, fileType);
             fc.setFileFilter(filter);
