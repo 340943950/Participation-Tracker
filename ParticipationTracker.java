@@ -5,11 +5,16 @@
  * Description: Tracking participation in a classroom setting
  * */
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.PrintWriter;
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -22,45 +27,300 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
- public class ParticipationTracker{
+public class ParticipationTracker{
      
-     /**
-      * The main method for where code should run
-      * 
-      * @param args the command line arguments
-      */
-     public static void main(String args[]) {
+    /**
+     * The main method for where code should run
+     * 
+     * @param args the command line arguments
+     */
+    public static void main(String args[]) {
          
-         /* Set the Nimbus look and feel */
-         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+	/* Set the Nimbus look and feel */
+	//<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+	/* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
          * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
          */
-         try {
-             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                 if ("Nimbus".equals(info.getName())) {
-                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                     break;
-                 }
-             }
-         } catch (ClassNotFoundException ex) {
-             java.util.logging.Logger.getLogger(GUILayout.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-         } catch (InstantiationException ex) {
-             java.util.logging.Logger.getLogger(GUILayout.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-         } catch (IllegalAccessException ex) {
-             java.util.logging.Logger.getLogger(GUILayout.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-             java.util.logging.Logger.getLogger(GUILayout.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-         }
-         //</editor-fold>
+	try {
+	    for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+		if ("Nimbus".equals(info.getName())) {
+		    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+		    break;
+		}
+	    }
+	} catch (ClassNotFoundException ex) {
+	    java.util.logging.Logger.getLogger(GUILayout.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+	} catch (InstantiationException ex) {
+	    java.util.logging.Logger.getLogger(GUILayout.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+	} catch (IllegalAccessException ex) {
+	    java.util.logging.Logger.getLogger(GUILayout.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+	} catch (javax.swing.UnsupportedLookAndFeelException ex) {
+	    java.util.logging.Logger.getLogger(GUILayout.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+	}
+	//</editor-fold>
          
-         /* Create and display the form */
-         java.awt.EventQueue.invokeLater(new Runnable() {
-             public void run() {
-                 new GUILayout().setVisible(true);
-             }
-         });
-     }
+	/* Create and display the form */
+	java.awt.EventQueue.invokeLater(new Runnable() {
+		public void run() {
+		    new GUILayout().setVisible(true);
+		}
+	    });
+
+	// IZABEL CODE --
+	String classListFile = ("./ClassListTemplate.csv"); // When integrating replace this with the file input from Adarshes code
+	String pointsFile = ("./Points-Example.csv"); // When integrating replace with points file
+
+	String[] classList = getClassList(classListFile); // Array with first and last name of every student
+	String[] classInitials = getInitials(classListFile); // Array with initials of every student for display purposes
+
+	// double[] studentAverages = getAverage(pointsFile); // Array with average point value for each student
+	// double[] studentPercentiles = getPercentile(studentAverages); // Array with percentile for each student
+	// String[] studentNSGE = getNSGE(studentPercentiles); // Array with letter grade for each student
+
+	// String participationResultsFile = classListFile.replaceAll(".csv", "_ParticipationMarks.csv"); // File name of output file with name and letter grade of each student
+	// printNSGEFile(participationResultsFile, classList, studentNSGE); // File containing name and participation mark of each student 
+    }
+
+    /**
+     * This method takes in the user inputed file and reads it to make an array with all the student names
+     * 
+     * @param fileName       The file name and location
+     * @return classList     An array containing the names of every student in that class
+     */
+    public static String[] getClassList(String fileName){
+        File classFile = new File(fileName);  
+        ArrayList<String> studentNames = new ArrayList<String>(); // Create an array list because we do not know the number of students
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader(classFile)); // Get the file to read
+            String str = reader.readLine(); // Read the first line to disriard the title
+
+            while(str != null){ // Loop to read every line
+                str = reader.readLine(); // Reading the line
+                
+                if(str != null){
+                    String[] parts = str.split(","); // Seperates the line using at every comma
+                    String firstName = parts[1]; // Finds the first name which is the second part
+                    String lastName = parts[2]; // Finds the last name which is the third part
+                    String name = (firstName + " " + lastName); // Puts first and last names together
+                    studentNames.add(name); // Adds the name into the array list
+                }
+                
+            }
+            reader.close();
+        }
+        catch(Exception e){ // Incase an error occures, informs the user of the error and quits the program
+            System.out.println("An error has occured please try again");
+            System.out.println(e);
+            System.exit(-1);
+        }
+
+        String[] classList = new String[studentNames.size()]; // Creating an array to covert the array list into it
+
+        for(int i = 0; i<studentNames.size(); i++){
+            classList[i] = studentNames.get(i); // Converting the array list into the array classList
+        }
+
+        return classList; 
+    }
+    /**
+     * This method takes in the user inputed file and reads it to make an array with all the student initials
+     * 
+     * @param fileName        The file name and location
+     * @return classInitials  An array containing the initials of every student in that class
+     */
+    public static String[] getInitials(String fileName){
+        File classFile = new File(fileName);  
+        ArrayList<String> studentInitials = new ArrayList<String>(); // Create an array list because we do not know the number of students
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader(classFile)); // Get the file to read
+            String str = reader.readLine(); // Read the first line to disriard the title
+
+            while(str != null){ // Loop to read every line
+                str = reader.readLine(); // Reading the line
+                
+                if(str != null){
+                    String[] parts = str.split(","); // Seperates the line using the comma
+                    char firstInitial = parts[1].charAt(0); // Finds the first letter in the second part (first name)
+                    char lastInitial = parts[2].charAt(0); // Finds the first letter in the third part (last name)
+                    String Initials = (firstInitial + ". " + lastInitial + "."); // Puts the initials together
+                    studentInitials.add(Initials); // Adds the initials into the array list
+                }
+                
+            }
+            reader.close();
+        }
+        catch(Exception e){ // Incase an error occures, informs the user of the error and quits the program
+            System.out.println("An error has occured please try again");
+            System.out.println(e);
+            System.exit(-1);
+        }
+
+        String[] classInitials = new String[studentInitials.size()]; // Creating an array to covert the array list into it
+
+        for(int i = 0; i<studentInitials.size(); i++){
+            classInitials[i] = studentInitials.get(i); // Converting the array list into the array classInitials
+        }
+
+        return classInitials; 
+    }
+
+    /**
+     * This method takes in the user inputed file contaning the daily points of each student and gets the average points value for each student
+     * 
+     * @param fileName     The file name and location
+     * @return averages    An array containing the averages of every student in that class
+     */
+    public static double[] getAverage(String fileName){
+        File pointsFile = new File(fileName);  
+        double[] averages = new double[1];
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader(pointsFile)); // Get the file to read
+            String str = reader.readLine(); // Read the first line to disriard the title
+
+            String[] studentParts = str.split(","); // Making an array where every point from that day is a element
+            int[] total = new int[studentParts.length - 1]; // Making new array to hold the student points sum
+            int count = 0; // Counts the total number of days where points where given
+
+            while(str != null){ // Loop to read every line
+                str = reader.readLine(); // Reading the line
+                
+                if(str != null){
+                    String[] parts = str.split(","); // Seperates the line using the comma
+
+                    for(int i = 1; i<parts.length; i++){
+                        int point = Integer.parseInt(parts[i]); // Turns the point from string into integer
+                        total[i-1] += point; // Adds the points for one student together
+                    }
+                    count++;
+                }
+            }
+            reader.close();
+
+            averages = new double[total.length]; // Making an array for the averages
+
+            for(int i = 0; i<total.length; i++){
+                averages[i] = (double)total[i]/(double)count; // Calculating average for each student by dividing the sum of al points by the number of points
+            }
+        }
+        catch(Exception e){ // Incase an error occures, informs the user of the error and quits the program
+            System.out.println("An error has occured please try again");
+            System.out.println(e);
+            System.exit(-1);
+        }
+
+        return averages;
+    }
+
+    /**
+     * This method takes in the student averages array and finds the percentile of each average
+     * 
+     * @param studentAverages   Array containing the average point value for each student
+     * @return percentiles      An array containing the percentile of the average of each student
+     */
+    public static double[] getPercentile(double[] studentAverages){
+        bubbleSort(studentAverages); // Sorting the array from smallest to biggest
+        double[] percentiles = new double[studentAverages.length]; // Making array containing the percentiles
+
+        for(int i = 0; i<studentAverages.length; i++){
+            int below = 0;
+
+            for(int j = 0; j<i; j++){
+
+                if(studentAverages[j] < studentAverages[i]){
+		    below++; // Finding how many numbers are below the current number
+                }
+            }
+            percentiles[i] = (double)below/(double)(studentAverages.length)*100.0; // Calculating the percentile for the average of each student
+        }
+
+        return percentiles;
+    }
+
+    /**
+     * This method organises an array from smallest to biggest
+     * 
+     * @param arr    The array you want to organize
+     */
+    public static void bubbleSort(double[] arr){
+        double temp;
+        for(int i = 0; i < arr.length -1;i++){
+
+            for(int j = 0; j<arr.length-i-1;j++){
+                
+                // Responsible for swaping elements in array (if left is > right swap)
+                if (arr[j] > arr[j+1]){
+                    temp = arr[j]; // Holds value on the left
+                    arr[j] = arr[j+1]; // Overwrite the left element with the right
+                    arr[j+1] = temp; // Place the left element to the right
+                }
+            }
+        }
+    }
+
+    /**
+     * This method takes in the student percentiles array and assignes a letter grade (NSGE) to reflect the students participation
+     * 
+     * @param studentPercentiles   Array containing the percentile value for each student
+     * @return studentNSGE         An array containing the letter grade of each student
+     */
+    public static String[] getNSGE(double[] studentPercentiles){
+        String[] studentNSGE = new String[studentPercentiles.length];
+
+        for(int i = 0; i<studentPercentiles.length; i++){
+
+            if(studentPercentiles[i]>=0 && studentPercentiles[i] < 15){
+                studentNSGE[i] = (String)("N"); // If the students percentile is below 15 they get N
+            }
+
+            else if(studentPercentiles[i]>=15 && studentPercentiles[i] < 45){
+                studentNSGE[i] = (String)("S"); // If the students percentile is between 15 and 45 they get S
+            }
+
+            else if(studentPercentiles[i]>=45 && studentPercentiles[i] < 85){
+                studentNSGE[i] = (String)("G"); // If the students percentile is between 45 and 85 they get G
+            }
+
+            else if(studentPercentiles[i]>=85 && studentPercentiles[i] < 100){
+                studentNSGE[i] = (String)("E"); // If the students percentile is between 85 and 100 they get E
+            }
+
+            else{
+                studentNSGE[i] = (String)("Undefined"); // If something has gone wrong during the calculation prosses the student will get a undefined grade
+            }
+        }
+
+        return studentNSGE;
+
+    }
+
+    /**
+     * This method takes in the class list and letter grades, and outputs a file with the student name and their participation mark
+     * 
+     * @param fileName   Name and location of the results file
+     * @param classList   Array containing the names of every student
+     * @param studentNSGE   Array containing the participation mark (NSGE) of every student
+     */
+    public static void printNSGEFile(String fileName, String[] classList, String[] studentNSGE){
+        try{
+            FileWriter myWriter = new FileWriter(fileName); // Creats the file
+            BufferedWriter bw = new BufferedWriter(myWriter);
+            PrintWriter pw = new PrintWriter(bw);
+            pw.println("Student,Participation Mark"); // Prints the title into the file
+            
+            for(int i=1; i<classList.length+1; i++){
+                pw.println(classList[i-1] + "," + studentNSGE[i-1]); // Prints every student name followed by their grade
+            }
+            
+            pw.flush();
+            pw.close();
+            System.out.println ("Successfully wrote in the file"); // Informs the user of successful completion
+        }
+        catch(Exception e){ // Incase an error occures, informs the user of the error and quits the program
+            System.out.println("An error has occured please try again");
+            System.out.println(e);
+            System.exit(-1);
+        }
+    }
 
     /**
      * This method can open a file explorer pop-up that finds the path of a selected file (returns an 
@@ -289,4 +549,4 @@ import java.awt.event.ActionListener;
         }
         writer.close();
     }
- }
+}
