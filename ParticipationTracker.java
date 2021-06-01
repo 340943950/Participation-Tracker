@@ -28,7 +28,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class ParticipationTracker extends GUILayout{
-     
     /**
      * The main method for where code should run
      * 
@@ -43,10 +42,10 @@ public class ParticipationTracker extends GUILayout{
          */
 	try {
 	    for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-		if ("Nimbus".equals(info.getName())) {
-		    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-		    break;
-		}
+		    if ("Nimbus".equals(info.getName())) {
+                javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                break;
+		    }
 	    }
 	} catch (ClassNotFoundException ex) {
 	    java.util.logging.Logger.getLogger(GUILayout.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
@@ -57,7 +56,10 @@ public class ParticipationTracker extends GUILayout{
 	} catch (javax.swing.UnsupportedLookAndFeelException ex) {
 	    java.util.logging.Logger.getLogger(GUILayout.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
 	}
-	//</editor-fold>
+    //</editor-fold>
+    
+    // Intialize Student Bars
+    ArrayList<StudentBar> studentBars = new ArrayList<StudentBar>();
 
 	// Initialize the GUI
 	GUILayout gui = new GUILayout();
@@ -65,30 +67,18 @@ public class ParticipationTracker extends GUILayout{
 		public void run() {
 		    gui.setVisible(true);
 		}
-	    });
-	
-        // Intialize Student Bars
-        ArrayList<StudentBar> studentBars = new ArrayList<StudentBar>();
-	
-        // Loop through each studentBar --- EDIT THIS TO CHANGE WHAT BUTTONS DO
-        studentBars.forEach((n)  -> {
-		System.out.println(n);
-	    });
+	});
         
-        // Event handler for Student Menu Item
-        gui.NewStudentMenuItem.addActionListener((ActionEvent ev) -> {
-		System.out.println("Make new student");
-		studentBars.add(new StudentBar("New S", gui.StudentListPanel));
-	    });
-        
-        // Event handler for Populate
-        gui.PopulateStudentBarMenu.addActionListener((ActionEvent ev) -> {
-            String classListFile = getFilePath("CSV File", "csv");
-            String[] classList = getClassList(classListFile);
-            for (String studentName : classList) {
-                studentBars.add(new StudentBar(studentName, gui.StudentListPanel));
-            }
-        });
+    // Event handler for Populate
+    gui.PopulateStudentBarMenu.addActionListener((ActionEvent ev) -> {
+        String classListFile = getFilePath("CSV File", "csv");
+        String[] names = getClassList(classListFile);
+        int[] points = new int[names.length];
+        for (String studentName : names) {
+            studentBars.add(new StudentBar(studentName, gui.StudentListPanel));
+            createPlusMinusListeners(studentBars, names, points);
+        }
+    });
 	
     /* IZABEL CODE --
 	String classListFile = ("./ClassListTemplate.csv"); // When integrating replace this with the file input from Adarshes code
@@ -104,6 +94,27 @@ public class ParticipationTracker extends GUILayout{
 
 	// String participationResultsFile = classListFile.replaceAll(".csv", "_ParticipationMarks.csv"); // File name of output file with name and letter grade of each student
 	// printNSGEFile(participationResultsFile, classList, studentNSGE); // File containing name and participation mark of each student 
+    }
+
+    /**
+     * This method updates the points that students have based on which button the user clicked
+     * 
+     * @param studentBars   The array list containing all the student bars
+     * @param names         The names of all the students (corresponds to points)
+     * @param points        The points of all the students (corresponds to names)
+     */
+    public static void createPlusMinusListeners(ArrayList<StudentBar> studentBars, String[] names, int[] points) {
+        // Gets the last StudentBar added to the studentBars array list and creates two action 
+        // listeners for it (one for the plus button and another for the minus button)
+        StudentBar studentBar = studentBars.get(studentBars.size()-1);
+        studentBar.plusButton.addActionListener((ActionEvent ev) -> {
+            String name = studentBar.studentName.getText();
+            updatePoints(name, 1, names, points);
+        });
+        studentBar.minusButton.addActionListener((ActionEvent ev) -> {
+            String name = studentBar.studentName.getText();
+            updatePoints(name, -1, names, points);
+        });
     }
 
     /**
@@ -574,5 +585,24 @@ public class ParticipationTracker extends GUILayout{
             }
         }
         writer.close();
+    }
+
+    /**
+     * This method updates the points that a certain student has
+     * 
+     * @param targetName    The name of the student whose points to change
+     * @param pointChange   The amount by which to change the student's points
+     * @param names         The names of all the students (corresponds to points)
+     * @param points        The points of all the students (corresponds to names)
+     */
+    public static void updatePoints(String targetName, int pointChange, String[] names, int[] points) {
+        int index = 0;
+        for (int i = 0; i < names.length; i++) {
+            if (names[i].equals(targetName)) {
+                index = i;
+                break;
+            }
+        }
+        points[index] += pointChange;
     }
 }
