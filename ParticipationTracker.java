@@ -110,6 +110,11 @@ public class ParticipationTracker extends GUILayout {
             // Leave names and points blank
         }
     });
+    
+    // Event handler for Points Menu
+    gui.SavePointsMenu.addActionListener((ActionEvent ev) -> {
+        System.out.println("Save points menu");
+    });
 
     // Runs this code when the application is closed
     Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {

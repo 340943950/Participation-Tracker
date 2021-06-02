@@ -24,6 +24,11 @@
                 <Property name="text" type="java.lang.String" value="Populate Student Bar"/>
               </Properties>
             </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="SavePointsMenu">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Save Points"/>
+              </Properties>
+            </MenuItem>
           </SubComponents>
         </Menu>
       </SubComponents>

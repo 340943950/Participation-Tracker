@@ -33,6 +33,7 @@ public class GUILayout extends javax.swing.JFrame {
         EditMenu = new javax.swing.JMenu();
         NewStudentMenuItem = new javax.swing.JMenuItem();
         PopulateStudentBarMenu = new javax.swing.JMenuItem();
+        SavePointsMenu = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -49,6 +50,9 @@ public class GUILayout extends javax.swing.JFrame {
 
         PopulateStudentBarMenu.setText("Populate Student Bar");
         EditMenu.add(PopulateStudentBarMenu);
+
+        SavePointsMenu.setText("Save Points");
+        EditMenu.add(SavePointsMenu);
 
         MenuBar.add(EditMenu);
 
@@ -81,6 +85,7 @@ public class GUILayout extends javax.swing.JFrame {
     public javax.swing.JMenuBar MenuBar;
     public javax.swing.JMenuItem NewStudentMenuItem;
     public javax.swing.JMenuItem PopulateStudentBarMenu;
+    public javax.swing.JMenuItem SavePointsMenu;
     public javax.swing.JScrollPane ScrollPane;
     public javax.swing.JPanel StudentListPanel;
     // End of variables declaration//GEN-END:variables
