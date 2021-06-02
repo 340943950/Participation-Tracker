@@ -27,14 +27,21 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class ParticipationTracker extends GUILayout{
+public class ParticipationTracker extends GUILayout {
     /**
      * The main method for where code should run
      * 
      * @param args the command line arguments
      */
-    public static void main(String args[]) {
+    public static void main(String args[]) throws IOException {
          
+        // Startup
+        String fileName = "RecentFiles.txt";
+        File file = new File(fileName);
+        // Creates file if it doesn't already exist
+        file.createNewFile();
+        ArrayList<String> recentFiles = fileToArrayList(fileName);
+
 	/* Set the Nimbus look and feel */
 	//<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
 	/* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
@@ -71,14 +78,49 @@ public class ParticipationTracker extends GUILayout{
         
     // Event handler for Populate
     gui.PopulateStudentBarMenu.addActionListener((ActionEvent ev) -> {
-        String classListFile = getFilePath("CSV File", "csv");
-        String[] names = getClassList(classListFile);
-        int[] points = new int[names.length];
-        for (String studentName : names) {
-            studentBars.add(new StudentBar(studentName, gui.StudentListPanel));
-            createPlusMinusListeners(studentBars, names, points);
+        ArrayList<String> tempOptions = new ArrayList<String>(recentFiles.size());
+        for (String element : recentFiles) {
+            tempOptions.add(element);
+        }
+        tempOptions.add("Other");
+        String[] options = arrListToArr(tempOptions);
+
+        String choice = dropDownDialogBox(options, "Which file would you like to open: ", "Recent Files");
+        String classListFile;
+        if (choice.equals("Other")) {
+            classListFile = getFilePath("CSV File", "csv");
+        }
+        else {
+            classListFile = choice;
+        }
+
+        if (!classListFile.equals("")) {
+            updateRecentFiles(recentFiles, classListFile, 5);
+        }
+
+        try {
+            String[] names = getClassList(classListFile);
+            int[] points = new int[names.length];
+            for (String studentName : names) {
+                studentBars.add(new StudentBar(studentName, gui.StudentListPanel));
+                createPlusMinusListeners(studentBars, names, points);
+            }
+        }
+        catch (FileNotFoundException e) {
+            // Leave names and points blank
         }
     });
+
+    // Runs this code when the application is closed
+    Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
+        public void run() {
+            try {
+                arrListToFile(recentFiles, fileName);
+            } catch (IOException e) {
+                // Doesn't change RecentFiles.txt
+            }
+        }
+    }, "Shutdown-thread"));
 	
     /* IZABEL CODE --
 	String classListFile = ("./ClassListTemplate.csv"); // When integrating replace this with the file input from Adarshes code
@@ -122,8 +164,9 @@ public class ParticipationTracker extends GUILayout{
      * 
      * @param fileName       The file name and location
      * @return classList     An array containing the names of every student in that class
+     * @throws FileNotFoundException
      */
-    public static String[] getClassList(String fileName){
+    public static String[] getClassList(String fileName) throws FileNotFoundException{
         File classFile = new File(fileName);  
         ArrayList<String> studentNames = new ArrayList<String>(); // Create an array list because we do not know the number of students
         try {
@@ -144,10 +187,8 @@ public class ParticipationTracker extends GUILayout{
             }
             reader.close();
         }
-        catch(Exception e){ // Incase an error occures, informs the user of the error and quits the program
-            System.out.println("An error has occured please try again");
-            System.out.println(e);
-            System.exit(-1);
+        catch(Exception e) {
+            // Incase an error occures, don't edit studentNames
         }
 
         String[] classList = new String[studentNames.size()]; // Creating an array to covert the array list into it
@@ -452,8 +493,16 @@ public class ParticipationTracker extends GUILayout{
      * @param maxToKeep     The maximum number of elements to keep (set to -1 to keep infinite elements)
      */
     public static void updateRecentFiles(ArrayList<String> arrList, String newElement, int maxToKeep) {
-        // Adds the new element at the end of the array lsit
-        arrList.add(newElement);
+        // Adds the new element at the end of the array list
+        boolean unique = true;
+        for (String element : arrList) {
+            if (element.equals(newElement)) {
+                unique = false;
+            }
+        }
+        if (unique) {
+            arrList.add(newElement);
+        }
 
         while (arrList.size() > maxToKeep && maxToKeep != -1) {
             // If there are more elements than should be kept then delete the first element (like queue data structure)
@@ -474,8 +523,10 @@ public class ParticipationTracker extends GUILayout{
         
         FileWriter writer = new FileWriter(fileName);
         for (int i = 0; i < arrList.size(); i++) {
+            System.out.println(arrList.get(i));
             writer.write(arrList.get(i));
             if (i != arrList.size() - 1) {
+                System.out.println("\n");
                 writer.write("\n");
             }
         }
