@@ -2,6 +2,7 @@ import java.util.ArrayList;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.Dimension;
+import java.awt.Component;
 import javax.swing.*;
 
 /**
@@ -15,6 +16,7 @@ public class GUILayout extends javax.swing.JFrame {
      */
     public GUILayout() {
         initComponents();
+       
     }
 
     /**
@@ -64,7 +66,7 @@ public class GUILayout extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(ScrollPane)
+                .addComponent(ScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 194, Short.MAX_VALUE)
                 .addContainerGap())
         );
         layout.setVerticalGroup(

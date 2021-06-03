@@ -1,4 +1,5 @@
 import javax.swing.*;
+import java.awt.*;
 
 /**
  * A class representing a single box entity with a label and two
@@ -30,20 +31,21 @@ public class StudentBar {
      * @param parentPanel The panel this box will be placed in
      */
     StudentBar(String studentName, JPanel parentPanel)  {
-        
+         
         // Initialize all the widgets
-        studentOptionBox = new Box(2);
+        studentOptionBox = Box.createHorizontalBox();    
         this.studentName = new JLabel();
         plusButton = new JButton();
-        minusButton = new JButton();
+        minusButton = new JButton();     
         
         // Set text for label and buttons
         this.studentName.setText(studentName);
         plusButton.setText("+");
-        minusButton.setText("-");
+        minusButton.setText("-");       
         
         // Add the components to studentOptionBox
         studentOptionBox.add(this.studentName);
+        studentOptionBox.add(Box.createHorizontalGlue());
         studentOptionBox.add(plusButton);
         studentOptionBox.add(minusButton);
         

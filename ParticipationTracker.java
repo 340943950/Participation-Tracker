@@ -5,6 +5,7 @@
  * Description: Tracking participation in a classroom setting
  * */
 
+import java.awt.Component;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.PrintWriter;
