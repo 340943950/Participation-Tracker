@@ -30,6 +30,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 public class ParticipationTracker extends GUILayout {
     public static String[] names = new String[0];
     public static int[] points = new int[0];
+    public static ArrayList<StudentBar> studentBars = new ArrayList<StudentBar>();
     public static String classListFile;
     
     /**
@@ -67,9 +68,6 @@ public class ParticipationTracker extends GUILayout {
 	    java.util.logging.Logger.getLogger(GUILayout.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
 	}
     //</editor-fold>
-    
-    // Intialize Student Bars
-    ArrayList<StudentBar> studentBars = new ArrayList<StudentBar>();
 
 	// Initialize the GUI
 	GUILayout gui = new GUILayout();
@@ -112,7 +110,6 @@ public class ParticipationTracker extends GUILayout {
                     studentBars.add(new StudentBar(studentName, gui.StudentListPanel));
                     createPlusMinusListeners(studentBars, names, points);
 
-                    // TEST CODE - Inittialize points
                     studentBars.forEach((studentBar) -> {
                         if (Arrays.asList(tempNames).contains(studentBar.studentName.getText())) {
                             studentBar.editPointsValue(0.0f);
@@ -131,14 +128,14 @@ public class ParticipationTracker extends GUILayout {
     
     // Event handler for Points Menu
     gui.SavePointsMenu.addActionListener((ActionEvent ev) -> {
-            // Add (POINTS) to the name of the class list file
-            String filePath = classListFile.substring(0, classListFile.length() - 4) + "_POINTS.csv";
-            try {
-                writePointsToFile(filePath, names, points);
-            }
-            catch (IOException e) {
-                // Nothing is written to the file
-            }
+        // Add (POINTS) to the name of the class list file
+        String filePath = classListFile.substring(0, classListFile.length() - 4) + "_POINTS.csv";
+        try {
+            writePointsToFile(filePath, names, points);
+        }
+        catch (IOException e) {
+            // Nothing is written to the file
+        }
     });
     
     // Event handler for creating graph
