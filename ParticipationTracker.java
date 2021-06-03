@@ -111,17 +111,18 @@ public class ParticipationTracker extends GUILayout {
                 for (String studentName : tempNames) {
                     studentBars.add(new StudentBar(studentName, gui.StudentListPanel));
                     createPlusMinusListeners(studentBars, names, points);
+
+                    // TEST CODE - Inittialize points
+                    studentBars.forEach((studentBar) -> {
+                        if (Arrays.asList(tempNames).contains(studentBar.studentName.getText())) {
+                            studentBar.editPointsValue(0.0f);
+                        }
+                    });
                 }
             }
             else {
                 JOptionPane.showMessageDialog(null, "ERROR: Overlapping elements in old class list and new class list", "Error", JOptionPane.ERROR_MESSAGE);
-            }            
-
-			// TEST CODE - Inittialize points
-			studentBars.forEach((studentBar) -> {
-                studentBar.editPointsValue(0.0f);
-			});
-
+            }
         }
         catch (FileNotFoundException e) {
             // Leave names and points blank
