@@ -36,6 +36,9 @@ public class GUILayout extends javax.swing.JFrame {
         NewStudentMenuItem = new javax.swing.JMenuItem();
         PopulateStudentBarMenu = new javax.swing.JMenuItem();
         SavePointsMenu = new javax.swing.JMenuItem();
+        CreateGraphMenu = new javax.swing.JMenuItem();
+        ViewMenu = new javax.swing.JMenu();
+        ResetDisplayMenu = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -56,7 +59,17 @@ public class GUILayout extends javax.swing.JFrame {
         SavePointsMenu.setText("Save Points");
         EditMenu.add(SavePointsMenu);
 
+        CreateGraphMenu.setText("Create Graph");
+        EditMenu.add(CreateGraphMenu);
+
         MenuBar.add(EditMenu);
+
+        ViewMenu.setText("View");
+
+        ResetDisplayMenu.setText("Reset Display");
+        ViewMenu.add(ResetDisplayMenu);
+
+        MenuBar.add(ViewMenu);
 
         setJMenuBar(MenuBar);
 
@@ -82,13 +95,16 @@ public class GUILayout extends javax.swing.JFrame {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    public javax.swing.JMenuItem CreateGraphMenu;
     public javax.swing.JMenu EditMenu;
     public javax.swing.JMenu FileMenu;
     public javax.swing.JMenuBar MenuBar;
     public javax.swing.JMenuItem NewStudentMenuItem;
     public javax.swing.JMenuItem PopulateStudentBarMenu;
+    public javax.swing.JMenuItem ResetDisplayMenu;
     public javax.swing.JMenuItem SavePointsMenu;
     public javax.swing.JScrollPane ScrollPane;
     public javax.swing.JPanel StudentListPanel;
+    public javax.swing.JMenu ViewMenu;
     // End of variables declaration//GEN-END:variables
 }

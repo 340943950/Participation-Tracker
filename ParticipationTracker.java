@@ -140,6 +140,16 @@ public class ParticipationTracker extends GUILayout {
                 // Nothing is written to the file
             }
     });
+    
+    // Event handler for creating graph
+    gui.CreateGraphMenu.addActionListener((ActionEvent ev) -> {
+        // Insert code here
+    });
+    
+    // Event handler for reseting display
+    gui.ResetDisplayMenu.addActionListener((ActionEvent ev) -> {
+        // Insert code here
+    });
 
     // Runs this code when the application is closed
     Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {

@@ -29,6 +29,23 @@
                 <Property name="text" type="java.lang.String" value="Save Points"/>
               </Properties>
             </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="CreateGraphMenu">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Create Graph"/>
+              </Properties>
+            </MenuItem>
+          </SubComponents>
+        </Menu>
+        <Menu class="javax.swing.JMenu" name="ViewMenu">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="View"/>
+          </Properties>
+          <SubComponents>
+            <MenuItem class="javax.swing.JMenuItem" name="ResetDisplayMenu">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Reset Display"/>
+              </Properties>
+            </MenuItem>
           </SubComponents>
         </Menu>
       </SubComponents>
