@@ -17,6 +17,7 @@ import java.awt.*;
 public class StudentBar {
     
     private Box studentOptionBox;
+	private JPanel parentPanel;
     public JLabel studentName;
 	public JLabel studentPointsLabel;
     public JButton plusButton;
@@ -38,6 +39,7 @@ public class StudentBar {
         studentOptionBox = Box.createHorizontalBox();
 		studentPointsLabel = new JLabel();
         this.studentName = new JLabel();
+		this.parentPanel = parentPanel;
         plusButton = new JButton();
         minusButton = new JButton();     
         
@@ -57,9 +59,9 @@ public class StudentBar {
         studentOptionBox.add(minusButton);
         
         // Add to parent panel and update for changes
-        parentPanel.add(studentOptionBox);
+        this.parentPanel.add(studentOptionBox);
         studentOptionBox.revalidate();
-        parentPanel.revalidate();
+        this.parentPanel.revalidate();
     }
 
 	/** 
@@ -74,5 +76,14 @@ public class StudentBar {
 	{
 		studentPointsLabel.setText(Float.toString(newPoints));
 		studentOptionBox.revalidate();
+	}
+
+	/**
+	 * Remove the component from the parent panel
+	 */
+	public void hideStudentBar()
+	{
+		parentPanel.remove(studentOptionBox);
+		parentPanel.revalidate();
 	}
 }
