@@ -119,6 +119,10 @@ public class ParticipationTracker extends GUILayout {
                         }
                     });
                 }
+
+				// TEST CODE - Remove a student bar example
+				studentBars.get(1).hideStudentBar();
+				studentBars.remove(1);
             }
             else {
                 JOptionPane.showMessageDialog(null, "ERROR: Overlapping elements in old class list and new class list", "Error", JOptionPane.ERROR_MESSAGE);
