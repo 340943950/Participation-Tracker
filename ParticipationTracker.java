@@ -5,42 +5,44 @@
  * Description: Tracking participation in a classroom setting
  * */
 
+import java.awt.event.ActionEvent;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.PrintWriter;
 import java.io.File;
-import java.io.FileReader;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Scanner;
 
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public class ParticipationTracker extends GUILayout {
+    public static String[] names = new String[0];
+    public static int[] points = new int[0];
+    public static String classListFile;
+    
     /**
      * The main method for where code should run
      * 
      * @param args the command line arguments
      */
     public static void main(String args[]) throws IOException {
-         
         // Startup
-        String fileName = "RecentFiles.txt";
-        File file = new File(fileName);
+        String textFileName = "RecentFiles.txt";
+        File file = new File(textFileName);
         // Creates file if it doesn't already exist
         file.createNewFile();
-        ArrayList<String> recentFiles = fileToArrayList(fileName);
+        ArrayList<String> recentFiles = fileToArrayList(textFileName);
 
 	/* Set the Nimbus look and feel */
 	//<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -86,7 +88,6 @@ public class ParticipationTracker extends GUILayout {
         String[] options = arrListToArr(tempOptions);
 
         String choice = dropDownDialogBox(options, "Which file would you like to open: ", "Recent Files");
-        String classListFile;
         if (choice.equals("Other")) {
             classListFile = getFilePath("CSV File", "csv");
         }
@@ -99,12 +100,21 @@ public class ParticipationTracker extends GUILayout {
         }
 
         try {
-            String[] names = getClassList(classListFile);
-            int[] points = new int[names.length];
-            for (String studentName : names) {
-                studentBars.add(new StudentBar(studentName, gui.StudentListPanel));
-                createPlusMinusListeners(studentBars, names, points);
+            String[] tempNames = getClassList(classListFile);
+            int[] tempPoints = new int[tempNames.length];
+
+            if (Collections.disjoint(Arrays.asList(names), Arrays.asList(tempNames))) {
+                names = concatStrArrs(names, tempNames);
+                points = concatIntArrs(points, tempPoints);
+
+                for (String studentName : tempNames) {
+                    studentBars.add(new StudentBar(studentName, gui.StudentListPanel));
+                    createPlusMinusListeners(studentBars, names, points);
+                }
             }
+            else {
+                JOptionPane.showMessageDialog(null, "ERROR: Overlapping elements in old class list and new class list", "Error", JOptionPane.ERROR_MESSAGE);
+            }            
         }
         catch (FileNotFoundException e) {
             // Leave names and points blank
@@ -114,10 +124,21 @@ public class ParticipationTracker extends GUILayout {
     // Runs this code when the application is closed
     Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
         public void run() {
+            // Save the user's recently used files to a text file
             try {
-                arrListToFile(recentFiles, fileName);
-            } catch (IOException e) {
+                arrListToFile(recentFiles, textFileName);
+            }
+            catch (IOException e) {
                 // Doesn't change RecentFiles.txt
+            }
+
+            // Add (POINTS) to the name of the class list file
+            String filePath = classListFile + " (POINTS)";
+            try {
+                writePointsToFile(filePath, names, points);
+            }
+            catch (IOException e) {
+                // Nothing is written to the file
             }
         }
     }, "Shutdown-thread"));
@@ -523,10 +544,8 @@ public class ParticipationTracker extends GUILayout {
         
         FileWriter writer = new FileWriter(fileName);
         for (int i = 0; i < arrList.size(); i++) {
-            System.out.println(arrList.get(i));
             writer.write(arrList.get(i));
             if (i != arrList.size() - 1) {
-                System.out.println("\n");
                 writer.write("\n");
             }
         }
@@ -588,7 +607,7 @@ public class ParticipationTracker extends GUILayout {
      * @param filePath  The path to the file with the old points data
      * @throws IOException
      */
-    public static void writePointsToFile(String filePath, String[] names, int[] points) throws IOException {        
+    public static void writePointsToFile(String filePath, String[] names, int[] points) throws IOException, FileNotFoundException {
         File file = new File(filePath);
         String[] headers;
         // File doesn't exist but was created
@@ -655,5 +674,61 @@ public class ParticipationTracker extends GUILayout {
             }
         }
         points[index] += pointChange;
+    }
+
+    /**
+     * This method concatenates two string arrays
+     * 
+     * @param a     The first string array
+     * @param b     The second string array
+     * @return c    The concatenated array
+     */
+    public static String[] concatStrArrs(String[] a, String[] b) {
+        int aLen = a.length;
+        int bLen = b.length;
+
+        String[] c;
+        if (a.length == 0) {
+            c = Arrays.copyOf(b, bLen);
+        }
+        else if (b.length == 0) {
+            c = Arrays.copyOf(a, aLen);
+        }
+        else {
+            c = Arrays.copyOf(a, aLen + bLen);
+            for (int i = 0; i < b.length; i++) {
+                c[i + aLen] = b[i];
+            }
+        }
+
+        return c;
+    }
+
+    /**
+     * This method concatenates two integer arrays
+     * 
+     * @param a     The first integer array
+     * @param b     The second integer array
+     * @return c    The concatenated array
+     */
+    public static int[] concatIntArrs(int[] a, int[] b) {
+        int aLen = a.length;
+        int bLen = b.length;
+
+        int[] c;
+        if (a.length == 0) {
+            c = Arrays.copyOf(b, bLen);
+        }
+        else if (b.length == 0) {
+            c = Arrays.copyOf(a, aLen);
+        }
+        else {
+            c = Arrays.copyOf(a, aLen + bLen);
+            for (int i = 0; i < b.length; i++) {
+                c[i + aLen] = b[i];
+        }
+        }
+
+        return c;
     }
 }
