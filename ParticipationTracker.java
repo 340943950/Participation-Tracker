@@ -106,6 +106,12 @@ public class ParticipationTracker extends GUILayout {
                 studentBars.add(new StudentBar(studentName, gui.StudentListPanel));
                 createPlusMinusListeners(studentBars, names, points);
             }
+
+			// TEST CODE - Inittialize points
+			studentBars.forEach((studentBar) -> {
+			studentBar.editPointsValue(0.0f);
+			});
+
         }
         catch (FileNotFoundException e) {
             // Leave names and points blank
@@ -127,7 +133,8 @@ public class ParticipationTracker extends GUILayout {
             }
         }
     }, "Shutdown-thread"));
-	
+
+		
     /* IZABEL CODE --
 	String classListFile = ("./ClassListTemplate.csv"); // When integrating replace this with the file input from Adarshes code
 	String pointsFile = ("./Points-Example.csv"); // When integrating replace with points file
