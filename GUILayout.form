@@ -24,6 +24,11 @@
                 <Property name="text" type="java.lang.String" value="Populate Student Bar"/>
               </Properties>
             </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="SavePointsMenu">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Save Points"/>
+              </Properties>
+            </MenuItem>
           </SubComponents>
         </Menu>
       </SubComponents>
@@ -54,7 +59,7 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="ScrollPane" max="32767" attributes="0"/>
+              <Component id="ScrollPane" pref="194" max="32767" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
       </Group>

@@ -6,6 +6,7 @@
  * */
 
 import java.awt.event.ActionEvent;
+import java.awt.Component;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -115,10 +116,28 @@ public class ParticipationTracker extends GUILayout {
             else {
                 JOptionPane.showMessageDialog(null, "ERROR: Overlapping elements in old class list and new class list", "Error", JOptionPane.ERROR_MESSAGE);
             }            
+
+			// TEST CODE - Inittialize points
+			studentBars.forEach((studentBar) -> {
+			studentBar.editPointsValue(0.0f);
+			});
+
         }
         catch (FileNotFoundException e) {
             // Leave names and points blank
         }
+    });
+    
+    // Event handler for Points Menu
+    gui.SavePointsMenu.addActionListener((ActionEvent ev) -> {
+            // Add (POINTS) to the name of the class list file
+            String filePath = classListFile.substring(0, classListFile.length() - 4) + "_POINTS.csv";
+            try {
+                writePointsToFile(filePath, names, points);
+            }
+            catch (IOException e) {
+                // Nothing is written to the file
+            }
     });
 
     // Runs this code when the application is closed
@@ -131,18 +150,10 @@ public class ParticipationTracker extends GUILayout {
             catch (IOException e) {
                 // Doesn't change RecentFiles.txt
             }
-
-            // Add (POINTS) to the name of the class list file
-            String filePath = classListFile + " (POINTS)";
-            try {
-                writePointsToFile(filePath, names, points);
-            }
-            catch (IOException e) {
-                // Nothing is written to the file
-            }
         }
     }, "Shutdown-thread"));
-	
+
+		
     /* IZABEL CODE --
 	String classListFile = ("./ClassListTemplate.csv"); // When integrating replace this with the file input from Adarshes code
 	String pointsFile = ("./Points-Example.csv"); // When integrating replace with points file

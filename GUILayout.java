@@ -2,6 +2,7 @@ import java.util.ArrayList;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.Dimension;
+import java.awt.Component;
 import javax.swing.*;
 
 /**
@@ -15,6 +16,7 @@ public class GUILayout extends javax.swing.JFrame {
      */
     public GUILayout() {
         initComponents();
+       
     }
 
     /**
@@ -33,6 +35,7 @@ public class GUILayout extends javax.swing.JFrame {
         EditMenu = new javax.swing.JMenu();
         NewStudentMenuItem = new javax.swing.JMenuItem();
         PopulateStudentBarMenu = new javax.swing.JMenuItem();
+        SavePointsMenu = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -50,6 +53,9 @@ public class GUILayout extends javax.swing.JFrame {
         PopulateStudentBarMenu.setText("Populate Student Bar");
         EditMenu.add(PopulateStudentBarMenu);
 
+        SavePointsMenu.setText("Save Points");
+        EditMenu.add(SavePointsMenu);
+
         MenuBar.add(EditMenu);
 
         setJMenuBar(MenuBar);
@@ -60,7 +66,7 @@ public class GUILayout extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(ScrollPane)
+                .addComponent(ScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 194, Short.MAX_VALUE)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -81,6 +87,7 @@ public class GUILayout extends javax.swing.JFrame {
     public javax.swing.JMenuBar MenuBar;
     public javax.swing.JMenuItem NewStudentMenuItem;
     public javax.swing.JMenuItem PopulateStudentBarMenu;
+    public javax.swing.JMenuItem SavePointsMenu;
     public javax.swing.JScrollPane ScrollPane;
     public javax.swing.JPanel StudentListPanel;
     // End of variables declaration//GEN-END:variables

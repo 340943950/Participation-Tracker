@@ -1,4 +1,5 @@
 import javax.swing.*;
+import java.awt.*;
 
 /**
  * A class representing a single box entity with a label and two
@@ -17,6 +18,7 @@ public class StudentBar {
     
     private Box studentOptionBox;
     public JLabel studentName;
+	public JLabel studentPointsLabel;
     public JButton plusButton;
     public JButton minusButton;
     
@@ -29,21 +31,28 @@ public class StudentBar {
      * @param studentName The name of the student
      * @param parentPanel The panel this box will be placed in
      */
-    StudentBar(String studentName, JPanel parentPanel)  {
-        
+    StudentBar(String studentName, JPanel parentPanel)
+	{
+
         // Initialize all the widgets
-        studentOptionBox = new Box(2);
+        studentOptionBox = Box.createHorizontalBox();
+		studentPointsLabel = new JLabel();
         this.studentName = new JLabel();
         plusButton = new JButton();
-        minusButton = new JButton();
+        minusButton = new JButton();     
         
         // Set text for label and buttons
         this.studentName.setText(studentName);
+		this.studentName.setPreferredSize(new Dimension(200, this.studentName.getY()));
+		studentPointsLabel.setText("Not Set");
         plusButton.setText("+");
-        minusButton.setText("-");
+        minusButton.setText("-");       
         
         // Add the components to studentOptionBox
         studentOptionBox.add(this.studentName);
+        studentOptionBox.add(Box.createHorizontalGlue());
+		studentOptionBox.add(studentPointsLabel);
+		studentOptionBox.add(Box.createHorizontalGlue());
         studentOptionBox.add(plusButton);
         studentOptionBox.add(minusButton);
         
@@ -52,4 +61,18 @@ public class StudentBar {
         studentOptionBox.revalidate();
         parentPanel.revalidate();
     }
+
+	/** 
+	 * Edit points value for the student.
+	 * <p>
+	 * The reason why this was created instead of just editing the label is because
+	 * the both the student bar needs to be revalidated
+	 * <p>
+	 * @param newPoints The new points system to change it to
+	 */
+	public void editPointsValue(float newPoints) 
+	{
+		studentPointsLabel.setText(Float.toString(newPoints));
+		studentOptionBox.revalidate();
+	}
 }
