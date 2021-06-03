@@ -119,7 +119,7 @@ public class ParticipationTracker extends GUILayout {
 
 			// TEST CODE - Inittialize points
 			studentBars.forEach((studentBar) -> {
-			studentBar.editPointsValue(0.0f);
+                studentBar.editPointsValue(0.0f);
 			});
 
         }
@@ -184,10 +184,28 @@ public class ParticipationTracker extends GUILayout {
         studentBar.plusButton.addActionListener((ActionEvent ev) -> {
             String name = studentBar.studentName.getText();
             updatePoints(name, 1, names, points);
+
+            int newPoints = 0;
+            for (int i = 0; i < names.length; i++) {
+                if (name.equals(names[i])) {
+                    newPoints = points[i];
+                    break;
+                }
+            }
+            studentBar.editPointsValue(newPoints);
         });
         studentBar.minusButton.addActionListener((ActionEvent ev) -> {
             String name = studentBar.studentName.getText();
             updatePoints(name, -1, names, points);
+            
+            int newPoints = 0;
+            for (int i = 0; i < names.length; i++) {
+                if (name.equals(names[i])) {
+                    newPoints = points[i];
+                    break;
+                }
+            }
+            studentBar.editPointsValue(newPoints);
         });
     }
 
