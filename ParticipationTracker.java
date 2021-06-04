@@ -6,7 +6,6 @@
  * */
 
 import java.awt.event.*;
-import java.awt.Component;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -20,11 +19,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
-import java.util.List;
 import java.util.Scanner;
 
 import javax.swing.JFileChooser;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.JTable;
+import javax.swing.JScrollPane;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
@@ -128,36 +129,42 @@ public class ParticipationTracker extends GUILayout {
             classListFile = choice;
         }
 
-        if (!classListFile.equals("")) {
-            updateRecentFiles(recentFiles, classListFile, 5);
-        }
+        if (!(choice.equals(null) || choice.equals(""))) {
+            boolean success = false;
+            try {
+                String[] tempNames = getClassList(classListFile);
+                int[] tempPoints = new int[tempNames.length];
 
-        try {
-            System.out.println(points.length);
-            String[] tempNames = getClassList(classListFile);
-            int[] tempPoints = new int[tempNames.length];
+                if (Collections.disjoint(Arrays.asList(names), Arrays.asList(tempNames))) {
+                    names = concatStrArrs(names, tempNames);
+                    points = concatIntArrs(points, tempPoints);
 
-            if (Collections.disjoint(Arrays.asList(names), Arrays.asList(tempNames))) {
-                names = concatStrArrs(names, tempNames);
-                points = concatIntArrs(points, tempPoints);
+                    for (String studentName : tempNames) {
+                        studentBars.add(new StudentBar(studentName, gui.StudentListPanel));
+                        createPlusMinusListeners(studentBars);
 
-                for (String studentName : tempNames) {
-                    studentBars.add(new StudentBar(studentName, gui.StudentListPanel));
-                    createPlusMinusListeners(studentBars);
+                        studentBars.forEach((studentBar) -> {
+                            if (Arrays.asList(tempNames).contains(studentBar.studentName.getText())) {
+                                studentBar.editPointsValue(0.0f);
+                            }
+                        });
+                    }
+                }
+                else {
+                    JOptionPane.showMessageDialog(null, "ERROR: Overlapping elements in old class list and new class list", "Error", JOptionPane.ERROR_MESSAGE);
+                }
 
-                    studentBars.forEach((studentBar) -> {
-                        if (Arrays.asList(tempNames).contains(studentBar.studentName.getText())) {
-                            studentBar.editPointsValue(0.0f);
-                        }
-                    });
+                if (tempNames.length > 0 && tempPoints.length > 0) {
+                    success = true;
                 }
             }
-            else {
-                JOptionPane.showMessageDialog(null, "ERROR: Overlapping elements in old class list and new class list", "Error", JOptionPane.ERROR_MESSAGE);
+            catch (FileNotFoundException e) {
+                JOptionPane.showMessageDialog(null, "ERROR: File couldn't be found", "Error", JOptionPane.ERROR_MESSAGE);
             }
-        }
-        catch (FileNotFoundException e) {
-            // Leave names and points blank
+
+            if (success) {
+                updateRecentFiles(recentFiles, classListFile, 5);
+            }
         }
     });
     
@@ -170,7 +177,7 @@ public class ParticipationTracker extends GUILayout {
                 writePointsToFile(filePath, names, points);
             }
             catch (IOException e) {
-                // Nothing is written to the file
+                JOptionPane.showMessageDialog(null, "ERROR: File writing failed, please try again", "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
         else {
@@ -185,6 +192,16 @@ public class ParticipationTracker extends GUILayout {
     
     // Event handler for reseting display
     gui.ResetDisplayMenu.addActionListener((ActionEvent ev) -> {
+        // Ask the user if they want to save the points data            
+        if (names.length != 0) {
+            int choice = JOptionPane.showConfirmDialog(null, "Would you like to save the current points data? ", "NSGE Results", JOptionPane.YES_NO_OPTION);
+            System.out.println(choice);
+            // If choice equals 0, it means that the user clicked yes
+            if (choice == JOptionPane.YES_OPTION) {
+                gui.SavePointsMenu.doClick();
+            }
+        }
+        
         classListFile = ""; // Reset class list file name
         names = null;
         names = new String[0];
@@ -196,9 +213,56 @@ public class ParticipationTracker extends GUILayout {
         studentBars.clear();
     });
     
-    // Event handler for auto-setting NSGE
+    // Event handler for auto-assigning NSGE
     gui.AutoAssignNSGEMenu.addActionListener((ActionEvent ev) -> {
-        // Insert code here
+        if (classListFile != "") {
+            String pointsFilePath = classListFile.substring(0, classListFile.length() - 4) + "_POINTS.csv";
+            String NSGEFilePath = classListFile.substring(0, classListFile.length() - 4) + "_NSGE.csv";
+            try {
+                String[] tempNames = getClassList(classListFile);
+                double[] averages = getAverage(pointsFilePath);
+                double[] percentiles = getPercentile(averages, tempNames);
+                String[] NSGE = getNSGE(percentiles);
+                // Initializing the JFrame
+                JFrame frame = new JFrame();
+                frame.setTitle("JTable Example");
+        
+                // Data to be displayed in the JTable
+                Object[][] data = new Object[tempNames.length][4];
+                for (int i = 0; i < data.length; i++) {
+                    data[i][0] = tempNames[i];
+                    data[i][1] = averages[i];
+                    data[i][2] = percentiles[i];
+                    data[i][3] = NSGE[i];
+                }
+                String[] columnNames = {"Name", "Average", "Percentile", "NSGE"};
+        
+                // Initializing the JTable
+                JTable table = new JTable(data, columnNames);
+                table.setBounds(30, 40, 200, 300);
+        
+                // Add JScrollPane to frame
+                JScrollPane sp = new JScrollPane(table);
+                frame.add(sp);
+
+                frame.setSize(500, 200);
+                frame.setVisible(true);
+
+                // Add JOptionPane to frame
+                int choice = JOptionPane.showConfirmDialog(frame, "Would you like to print the NSGE results to a file? ", "NSGE Results", JOptionPane.YES_NO_OPTION);
+                System.out.println(choice);
+                // If choice equals O, it means that the user clicked yes
+                if (choice == JOptionPane.YES_OPTION) {
+                    printNSGEFile(NSGEFilePath, tempNames, NSGE);
+                }
+            }
+            catch (FileNotFoundException e) {
+                JOptionPane.showMessageDialog(null, "ERROR: File couldn't be found", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+        else {
+            JOptionPane.showMessageDialog(null, "ERROR: Please start by populating student bars", "Error", JOptionPane.ERROR_MESSAGE);
+        }
     });
 
     // Runs this code when the application is closed
@@ -209,7 +273,7 @@ public class ParticipationTracker extends GUILayout {
                 arrListToFile(recentFiles, textFileName);
             }
             catch (IOException e) {
-                // Doesn't change RecentFiles.txt
+                JOptionPane.showMessageDialog(null, "ERROR: File writing failed, please try again", "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
     }, "Shutdown-thread"));
@@ -275,6 +339,7 @@ public class ParticipationTracker extends GUILayout {
                 String[] options = {"Create Graph", "Delete Student", "Rename Student"};
                 String choice = dropDownDialogBox(options, "Please choose and option: ", name + " Options");
                 if (choice.equals(options[0])) {
+                    // TODO - Create individual student graph
                     System.out.println("Create Graph");
                 }
                 else if (choice.equals(options[1])) {
@@ -354,8 +419,8 @@ public class ParticipationTracker extends GUILayout {
             }
             reader.close();
         }
-        catch(Exception e) {
-            // Incase an error occures, don't edit studentNames
+        catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "ERROR: File reading failed, please try again", "Error", JOptionPane.ERROR_MESSAGE);
         }
 
         String[] classList = new String[studentNames.size()]; // Creating an array to covert the array list into it
@@ -394,9 +459,7 @@ public class ParticipationTracker extends GUILayout {
             reader.close();
         }
         catch(Exception e){ // Incase an error occures, informs the user of the error and quits the program
-            System.out.println("An error has occured please try again");
-            System.out.println(e);
-            System.exit(-1);
+            JOptionPane.showMessageDialog(null, "ERROR: File writing failed, please try again", "Error", JOptionPane.ERROR_MESSAGE);
         }
 
         String[] classInitials = new String[studentInitials.size()]; // Creating an array to covert the array list into it
@@ -447,9 +510,7 @@ public class ParticipationTracker extends GUILayout {
             }
         }
         catch(Exception e){ // Incase an error occures, informs the user of the error and quits the program
-            System.out.println("An error has occured please try again");
-            System.out.println(e);
-            System.exit(-1);
+            JOptionPane.showMessageDialog(null, "ERROR: File reading failed, please try again", "Error", JOptionPane.ERROR_MESSAGE);
         }
 
         return averages;
@@ -461,8 +522,8 @@ public class ParticipationTracker extends GUILayout {
      * @param studentAverages   Array containing the average point value for each student
      * @return percentiles      An array containing the percentile of the average of each student
      */
-    public static double[] getPercentile(double[] studentAverages){
-        bubbleSort(studentAverages); // Sorting the array from smallest to biggest
+    public static double[] getPercentile(double[] studentAverages, String[] names){
+        bubbleSort(studentAverages, names); // Sorting the array from smallest to biggest
         double[] percentiles = new double[studentAverages.length]; // Making array containing the percentiles
 
         for(int i = 0; i<studentAverages.length; i++){
@@ -481,12 +542,13 @@ public class ParticipationTracker extends GUILayout {
     }
 
     /**
-     * This method organises an array from smallest to biggest
+     * This method organises an array from smallest to biggest and organizes arr2 so that the indices still match
      * 
      * @param arr    The array you want to organize
      */
-    public static void bubbleSort(double[] arr){
+    public static void bubbleSort(double[] arr, String[] arr2){
         double temp;
+        String temp2;
         for(int i = 0; i < arr.length -1;i++){
 
             for(int j = 0; j<arr.length-i-1;j++){
@@ -496,6 +558,10 @@ public class ParticipationTracker extends GUILayout {
                     temp = arr[j]; // Holds value on the left
                     arr[j] = arr[j+1]; // Overwrite the left element with the right
                     arr[j+1] = temp; // Place the left element to the right
+
+                    temp2 = arr2[j]; // Holds value on the left
+                    arr2[j] = arr2[j+1]; // Overwrite the left element with the right
+                    arr2[j+1] = temp2; // Place the left element to the right
                 }
             }
         }
@@ -560,9 +626,7 @@ public class ParticipationTracker extends GUILayout {
             System.out.println ("Successfully wrote in the file"); // Informs the user of successful completion
         }
         catch(Exception e){ // Incase an error occures, informs the user of the error and quits the program
-            System.out.println("An error has occured please try again");
-            System.out.println(e);
-            System.exit(-1);
+            JOptionPane.showMessageDialog(null, "ERROR: File writing failed, please try again", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -635,7 +699,7 @@ public class ParticipationTracker extends GUILayout {
             reader.close();
         }
         catch (FileNotFoundException e) {
-            // File was not found so return an empty array list
+            JOptionPane.showMessageDialog(null, "ERROR: File couldn't be found", "Error", JOptionPane.ERROR_MESSAGE);
         }
         return list;
     }
@@ -792,7 +856,7 @@ public class ParticipationTracker extends GUILayout {
                     break;
                 }
             }
-            System.out.println(nameIndex);
+
             if (nameIndex != -1) {
                 writer.append("," + Integer.toString(points[nameIndex]));
             }
