@@ -78,7 +78,7 @@ public class ParticipationTracker extends GUILayout {
 		} catch (javax.swing.UnsupportedLookAndFeelException ex) {
 			java.util.logging.Logger.getLogger(GUILayout.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
 		}
-    //</editor-fold>
+		//</editor-fold>
 
 	// Initialize the GUI
 	GUILayout gui = new GUILayout();
@@ -276,6 +276,9 @@ public class ParticipationTracker extends GUILayout {
         }
     }, "Shutdown-thread"));
 
+    // Make a graph (data_POINTS.csv)";
+	// GraphBuilder.filePath = "data_POINTS.csv";
+    // Application.launch(GraphBuilder.class);
 		
     /* IZABEL CODE --
 	String classListFile = ("./ClassListTemplate.csv"); // When integrating replace this with the file input from Adarshes code
@@ -939,4 +942,3 @@ public class ParticipationTracker extends GUILayout {
         return c;
     }
 }
->>>>>>> 847115c74725f06fada29b7914934c77e7759560
