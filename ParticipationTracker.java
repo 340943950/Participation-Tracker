@@ -5,7 +5,7 @@
  * Description: Tracking participation in a classroom setting
  * */
 
-import java.awt.event.ActionEvent;
+import java.awt.event.*;
 import java.awt.Component;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.List;
 import java.util.Scanner;
 
 import javax.swing.JFileChooser;
@@ -27,16 +28,25 @@ import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+import javafx.application.Application;
+import javafx.scene.Scene;
+import javafx.scene.chart.LineChart;
+import javafx.scene.chart.NumberAxis;
+import javafx.scene.chart.CategoryAxis;
+import javafx.scene.chart.XYChart;
+import javafx.stage.Stage;
+
 public class ParticipationTracker extends GUILayout {
+    // Declared as global variables so that they can be changed within lambda expressions
     public static String[] names = new String[0];
     public static int[] points = new int[0];
     public static ArrayList<StudentBar> studentBars = new ArrayList<StudentBar>();
-    public static String classListFile;
+    public static String classListFile = "";
     
     /**
      * The main method for where code should run
      * 
-     * @param args the command line arguments
+     * @param args  The command line arguments
      */
     public static void main(String args[]) throws IOException {
         // Startup
@@ -77,6 +87,30 @@ public class ParticipationTracker extends GUILayout {
 		}
 	});
         
+    gui.NewStudentMenuItem.addActionListener((ActionEvent ev) -> {
+        String fullName = JOptionPane.showInputDialog(null, "What is the student's full name?", "New Student", JOptionPane.PLAIN_MESSAGE);
+        String[] student = {fullName};
+
+        if (Collections.disjoint(Arrays.asList(names), Arrays.asList(student))) {
+            names = concatStrArrs(names, student);
+            points = concatIntArrs(points, new int[1]);
+
+            for (String studentName : student) {
+                studentBars.add(new StudentBar(studentName, gui.StudentListPanel));
+                createPlusMinusListeners(studentBars);
+
+                studentBars.forEach((studentBar) -> {
+                    if (Arrays.asList(student).contains(studentBar.studentName.getText())) {
+                        studentBar.editPointsValue(0.0f);
+                    }
+                });
+            }
+        }
+        else {
+            JOptionPane.showMessageDialog(null, "ERROR: Overlapping elements in old class list and new class list", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    });
+    
     // Event handler for Populate
     gui.PopulateStudentBarMenu.addActionListener((ActionEvent ev) -> {
         ArrayList<String> tempOptions = new ArrayList<String>(recentFiles.size());
@@ -99,6 +133,7 @@ public class ParticipationTracker extends GUILayout {
         }
 
         try {
+            System.out.println(points.length);
             String[] tempNames = getClassList(classListFile);
             int[] tempPoints = new int[tempNames.length];
 
@@ -108,7 +143,7 @@ public class ParticipationTracker extends GUILayout {
 
                 for (String studentName : tempNames) {
                     studentBars.add(new StudentBar(studentName, gui.StudentListPanel));
-                    createPlusMinusListeners(studentBars, names, points);
+                    createPlusMinusListeners(studentBars);
 
                     studentBars.forEach((studentBar) -> {
                         if (Arrays.asList(tempNames).contains(studentBar.studentName.getText())) {
@@ -128,13 +163,18 @@ public class ParticipationTracker extends GUILayout {
     
     // Event handler for Points Menu
     gui.SavePointsMenu.addActionListener((ActionEvent ev) -> {
-        // Add (POINTS) to the name of the class list file
-        String filePath = classListFile.substring(0, classListFile.length() - 4) + "_POINTS.csv";
-        try {
-            writePointsToFile(filePath, names, points);
+        if (names.length != 0) {
+            // Add (POINTS) to the name of the class list file
+            String filePath = classListFile.substring(0, classListFile.length() - 4) + "_POINTS.csv";
+            try {
+                writePointsToFile(filePath, names, points);
+            }
+            catch (IOException e) {
+                // Nothing is written to the file
+            }
         }
-        catch (IOException e) {
-            // Nothing is written to the file
+        else {
+            JOptionPane.showMessageDialog(null, "ERROR: No data to save - start by populating student bars", "Error", JOptionPane.ERROR_MESSAGE);
         }
     });
     
@@ -145,9 +185,15 @@ public class ParticipationTracker extends GUILayout {
     
     // Event handler for reseting display
     gui.ResetDisplayMenu.addActionListener((ActionEvent ev) -> {
+        classListFile = ""; // Reset class list file name
         names = null;
+        names = new String[0];
         points = null;
-        studentBars = null;
+        points = new int[0];
+        for (int i = 0; i < studentBars.size(); i++) {
+            studentBars.get(i).hideStudentBar();
+        }
+        studentBars.clear();
     });
 
     // Runs this code when the application is closed
@@ -187,7 +233,7 @@ public class ParticipationTracker extends GUILayout {
      * @param names         The names of all the students (corresponds to points)
      * @param points        The points of all the students (corresponds to names)
      */
-    public static void createPlusMinusListeners(ArrayList<StudentBar> studentBars, String[] names, int[] points) {
+    public static void createPlusMinusListeners(ArrayList<StudentBar> studentBars) {
         // Gets the last StudentBar added to the studentBars array list and creates two action 
         // listeners for it (one for the plus button and another for the minus button)
         StudentBar studentBar = studentBars.get(studentBars.size()-1);
@@ -216,6 +262,59 @@ public class ParticipationTracker extends GUILayout {
                 }
             }
             studentBar.editPointsValue(newPoints);
+        });
+        studentBar.studentName.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                String name = studentBar.studentName.getText();
+                String[] options = {"Create Graph", "Delete Student", "Rename Student"};
+                String choice = dropDownDialogBox(options, "Please choose and option: ", name + " Options");
+                if (choice.equals(options[0])) {
+                    System.out.println("Create Graph");
+                }
+                else if (choice.equals(options[1])) {
+                    for (int i = 0; i < names.length; i++) {
+                        if (names[i].equals(name)) {
+                            studentBars.get(i).hideStudentBar();
+                            studentBars.remove(i);
+                            
+                            ArrayList<String> tempNames = new ArrayList<>();
+                            for (int j = 0; j < names.length; j++) {
+                                if (j != i) {
+                                    tempNames.add(names[j]);
+                                }
+                            }
+                            names = null;
+                            Object[] namesObj = tempNames.toArray();
+                            names = Arrays.copyOf(namesObj, namesObj.length, String[].class);
+                            
+                            ArrayList<Integer> tempPoints = new ArrayList<Integer>();
+                            for (int j = 0; j < points.length; j++) {
+                                if (j != i) {
+                                    tempPoints.add(points[j]);
+                                }
+                            }
+                            points = null;
+                            points = tempPoints.stream().mapToInt(k->k).toArray();
+
+                            break;
+                        }
+                    }
+                }
+                else if (choice.equals(options[2])) {
+                    String fullName = JOptionPane.showInputDialog(null, "What is the student's full name?", "New Student", JOptionPane.PLAIN_MESSAGE);
+                    String[] student = {fullName};
+                    for (int i = 0; i < names.length; i++) {
+                        if (names[i].equals(name)) {
+                            if (Collections.disjoint(Arrays.asList(names), Arrays.asList(student))) {
+                                names[i] = fullName;
+                                studentBar.studentName.setText(fullName);
+                            }
+                            break;
+                        }
+                    }
+                }
+            }
         });
     }
 
