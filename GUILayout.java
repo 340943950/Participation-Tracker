@@ -37,6 +37,7 @@ public class GUILayout extends javax.swing.JFrame {
         PopulateStudentBarMenu = new javax.swing.JMenuItem();
         SavePointsMenu = new javax.swing.JMenuItem();
         CreateGraphMenu = new javax.swing.JMenuItem();
+        AutoAssignNSGEMenu = new javax.swing.JMenuItem();
         ViewMenu = new javax.swing.JMenu();
         ResetDisplayMenu = new javax.swing.JMenuItem();
 
@@ -61,6 +62,9 @@ public class GUILayout extends javax.swing.JFrame {
 
         CreateGraphMenu.setText("Create Graph");
         EditMenu.add(CreateGraphMenu);
+
+        AutoAssignNSGEMenu.setText("Auto-Assign NSGE");
+        EditMenu.add(AutoAssignNSGEMenu);
 
         MenuBar.add(EditMenu);
 
@@ -95,6 +99,7 @@ public class GUILayout extends javax.swing.JFrame {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    public javax.swing.JMenuItem AutoAssignNSGEMenu;
     public javax.swing.JMenuItem CreateGraphMenu;
     public javax.swing.JMenu EditMenu;
     public javax.swing.JMenu FileMenu;
