@@ -195,7 +195,6 @@ public class ParticipationTracker extends GUILayout {
         // Ask the user if they want to save the points data            
         if (names.length != 0) {
             int choice = JOptionPane.showConfirmDialog(null, "Would you like to save the current points data? ", "NSGE Results", JOptionPane.YES_NO_OPTION);
-            System.out.println(choice);
             // If choice equals 0, it means that the user clicked yes
             if (choice == JOptionPane.YES_OPTION) {
                 gui.SavePointsMenu.doClick();
@@ -250,7 +249,6 @@ public class ParticipationTracker extends GUILayout {
 
                 // Add JOptionPane to frame
                 int choice = JOptionPane.showConfirmDialog(frame, "Would you like to print the NSGE results to a file? ", "NSGE Results", JOptionPane.YES_NO_OPTION);
-                System.out.println(choice);
                 // If choice equals O, it means that the user clicked yes
                 if (choice == JOptionPane.YES_OPTION) {
                     printNSGEFile(NSGEFilePath, tempNames, NSGE);
@@ -623,7 +621,6 @@ public class ParticipationTracker extends GUILayout {
             
             pw.flush();
             pw.close();
-            System.out.println ("Successfully wrote in the file"); // Informs the user of successful completion
         }
         catch(Exception e){ // Incase an error occures, informs the user of the error and quits the program
             JOptionPane.showMessageDialog(null, "ERROR: File writing failed, please try again", "Error", JOptionPane.ERROR_MESSAGE);
