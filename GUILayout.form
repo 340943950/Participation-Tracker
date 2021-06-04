@@ -34,6 +34,11 @@
                 <Property name="text" type="java.lang.String" value="Create Graph"/>
               </Properties>
             </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="AutoAssignNSGEMenu">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Auto-Assign NSGE"/>
+              </Properties>
+            </MenuItem>
           </SubComponents>
         </Menu>
         <Menu class="javax.swing.JMenu" name="ViewMenu">

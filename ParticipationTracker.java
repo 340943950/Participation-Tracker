@@ -195,6 +195,11 @@ public class ParticipationTracker extends GUILayout {
         }
         studentBars.clear();
     });
+    
+    // Event handler for auto-setting NSGE
+    gui.AutoAssignNSGEMenu.addActionListener((ActionEvent ev) -> {
+        // Insert code here
+    });
 
     // Runs this code when the application is closed
     Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
