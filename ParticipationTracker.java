@@ -107,7 +107,7 @@ public class ParticipationTracker extends GUILayout {
             }
         }
         else {
-            JOptionPane.showMessageDialog(null, "ERROR: Overlapping elements in old class list and new class list", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "ERROR: This student name already exists", "Error", JOptionPane.ERROR_MESSAGE);
         }
     });
     
@@ -309,6 +309,9 @@ public class ParticipationTracker extends GUILayout {
                             if (Collections.disjoint(Arrays.asList(names), Arrays.asList(student))) {
                                 names[i] = fullName;
                                 studentBar.studentName.setText(fullName);
+                            }
+                            else {
+                                JOptionPane.showMessageDialog(null, "ERROR: This student name already exists", "Error", JOptionPane.ERROR_MESSAGE);
                             }
                             break;
                         }
@@ -784,7 +787,7 @@ public class ParticipationTracker extends GUILayout {
                     break;
                 }
             }
-
+            System.out.println(nameIndex);
             if (nameIndex != -1) {
                 writer.append("," + Integer.toString(points[nameIndex]));
             }
