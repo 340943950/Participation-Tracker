@@ -187,7 +187,6 @@ public class ParticipationTracker extends GUILayout {
     
     // Event handler for creating graph
     gui.CreateGraphMenu.addActionListener((ActionEvent ev) -> {
-        // Insert code here
     });
     
     // Event handler for reseting display
@@ -278,7 +277,7 @@ public class ParticipationTracker extends GUILayout {
 
     // Make a graph (data_POINTS.csv)";
 	// GraphBuilder.filePath = "data_POINTS.csv";
-    // Application.launch(GraphBuilder.class);
+    Application.launch(GraphBuilder.class);
 		
     /* IZABEL CODE --
 	String classListFile = ("./ClassListTemplate.csv"); // When integrating replace this with the file input from Adarshes code

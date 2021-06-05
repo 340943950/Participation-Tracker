@@ -15,7 +15,7 @@ import javafx.scene.chart.XYChart;
 import javafx.stage.Stage;
 
 public class GraphBuilder extends Application{
-	public static String filePath;
+	public static String filePath = "data_POINTS.csv";
 
 	/**
 	 * This method reads the file and stores the information into an ArrayList.
